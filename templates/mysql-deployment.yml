@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "flaskapp.fullname" . }}-mysql
+  name: mysql
   labels:
     app: db
   {{- include "flaskapp.labels" . | nindent 4 }}
@@ -23,7 +23,7 @@ spec:
           valueFrom:
             secretKeyRef:
               key: db_root_password
-              name: {{ include "flaskapp.fullname" . }}-flaskapi-secrets
+              name: flaskapi-secrets
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.mysql.mysql.image.repository }}:{{ .Values.mysql.mysql.image.tag
@@ -40,4 +40,4 @@ spec:
       volumes:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
-          claimName: {{ include "flaskapp.fullname" . }}-mysql-pv-claim
+          claimName: mysql-pv-claim

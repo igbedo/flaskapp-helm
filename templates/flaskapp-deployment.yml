@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "flaskapp.fullname" . }}-flaskapi-deployment
+  name: flaskapi-deployment
   labels:
     app: flaskapi
   {{- include "flaskapp.labels" . | nindent 4 }}
@@ -23,7 +23,7 @@ spec:
           valueFrom:
             secretKeyRef:
               key: db_root_password
-              name: {{ include "flaskapp.fullname" . }}-flaskapi-secrets
+              name: flaskapi-secrets
         - name: db_name
           value: {{ quote .Values.flaskapiDeployment.flaskapi.env.dbName }}
         - name: KUBERNETES_CLUSTER_DOMAIN
