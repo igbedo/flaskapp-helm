@@ -1,0 +1,35 @@
+flaskService:
+  ports:
+  - port: 5000
+    protocol: TCP
+    targetPort: 5000
+  type: NodePort
+flaskapiDeployment:
+  flaskapi:
+    env:
+      dbName: flaskapi
+    image:
+      repository: igbedo/flaskapp
+      tag: latest
+    imagePullPolicy: Always
+  replicas: 3
+flaskapiSecrets:
+  dbRootPassword: ""
+kubernetesClusterDomain: cluster.local
+mysql:
+  mysql:
+    image:
+      repository: mysql
+      tag: latest
+    imagePullPolicy: Always
+  ports:
+  - name: mysql
+    port: 3306
+    protocol: TCP
+    targetPort: 0
+  replicas: 1
+  type: NodePort
+pvc:
+  mysqlPvClaim:
+    storageClass: manual
+    storageRequest: 2Gi

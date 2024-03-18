@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "flaskapp.fullname" . }}-flaskapi-deployment
+  labels:
+    app: flaskapi
+  {{- include "flaskapp.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.flaskapiDeployment.replicas }}
+  selector:
+    matchLabels:
+      app: flaskapi
+    {{- include "flaskapp.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: flaskapi
+      {{- include "flaskapp.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: db_root_password
+          valueFrom:
+            secretKeyRef:
+              key: db_root_password
+              name: {{ include "flaskapp.fullname" . }}-flaskapi-secrets
+        - name: db_name
+          value: {{ quote .Values.flaskapiDeployment.flaskapi.env.dbName }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.flaskapiDeployment.flaskapi.image.repository }}:{{ .Values.flaskapiDeployment.flaskapi.image.tag
+          | default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.flaskapiDeployment.flaskapi.imagePullPolicy }}
+        name: flaskapi
+        ports:
+        - containerPort: 5000
+        resources: {}

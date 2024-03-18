@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "flaskapp.fullname" . }}-mysql
+  labels:
+    app: db
+  {{- include "flaskapp.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.mysql.type }}
+  selector:
+    app: db
+  {{- include "flaskapp.selectorLabels" . | nindent 4 }}
+  ports:
+	{{- .Values.mysql.ports | toYaml | nindent 2 -}}
